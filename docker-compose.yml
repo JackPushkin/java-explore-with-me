@@ -1,15 +1,68 @@
 version: '3.1'
+
 services:
   stats-server:
+    build: ./ewm-stats-service/stats-service
+    container_name: stats_service
     ports:
       - "9090:9090"
+      - "9091:9091"
+    depends_on:
+      - stats-db
+    environment:
+      - DATASOURCE_URL=jdbc:postgresql://stats-db:5432/explore_db
+      - DATASOURCE_USERNAME=postgres
+      - DATASOURCE_PASSWORD=postgres
 
   stats-db:
     image: postgres:14-alpine
+    container_name: stats-db
+    ports:
+      - "5433:5432"
+    volumes:
+      - stats_volume:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=explore_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
 
   ewm-service:
+    build: ./ewm-main-service
+    container_name: main_service
     ports:
       - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      - ewm-db
+    environment:
+      - BASE_CLIENT_URL=http://stats-server:9090
+      - DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/main_db
+      - DATASOURCE_USERNAME=postgres
+      - DATASOURCE_PASSWORD=postgres
+
 
   ewm-db:
     image: postgres:14-alpine
+    container_name: main_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - main_volume:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=main_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: pg_isready -q -d $$POSTGRES_DB -U $$POSTGRES_USER
+      timeout: 5s
+      interval: 5s
+      retries: 10
+
+volumes:
+  stats_volume:
+  main_volume:
