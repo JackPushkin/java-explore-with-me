@@ -23,10 +23,11 @@ public class TestController {
     @PostMapping("/postTest")
     public String sendTestHit() {
         return statsClient.postHit(EndpointHitDto.builder()
-                .app("/service100")
+                .app("service100")
                 .uri("/uri")
                 .ip("192.168.1.1")
-                .timestamp("2000-01-01 15:10:05")
+                .timestamp(LocalDateTime.parse("2000-01-01 15:10:05",
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .build()).block();
     }
 
