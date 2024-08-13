@@ -1,20 +1,25 @@
 package ru.practicum.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
-@Data
+@Getter
+@Setter
 @Builder
 public class EndpointHitDto {
+
     @NotBlank
     private String app;
+
     @NotBlank
     private String uri;
+
     @NotBlank
     private String ip;
-    @NotNull
+
+    @NotBlank
     private String timestamp;
 }

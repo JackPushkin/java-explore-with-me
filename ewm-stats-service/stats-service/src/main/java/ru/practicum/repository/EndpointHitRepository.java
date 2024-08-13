@@ -2,7 +2,6 @@ package ru.practicum.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.model.EndpointHit;
 import ru.practicum.model.ViewStats;
@@ -21,9 +20,7 @@ public interface EndpointHitRepository extends JpaRepository<EndpointHit, Long> 
            "WHERE (eh.timestamp BETWEEN :startDateTime AND :endDateTime) " +
            "GROUP BY eh.app, eh.uri " +
            "ORDER BY COUNT(eh.id) DESC")
-    List<ViewStats> getAllServicesStats(
-            @Param("startDateTime") LocalDateTime startDateTime,
-            @Param("endDateTime") LocalDateTime endDateTime);
+    List<ViewStats> getAllServicesStats(LocalDateTime startDateTime, LocalDateTime endDateTime);
 
     // Получить статистику для всех uri с учётом уникальных ip (uri == null, unique == true)
 

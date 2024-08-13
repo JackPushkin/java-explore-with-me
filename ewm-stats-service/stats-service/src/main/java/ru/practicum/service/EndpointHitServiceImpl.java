@@ -3,7 +3,7 @@ package ru.practicum.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.GetStatsException;
+import ru.practicum.exception.GetStatsException;
 import ru.practicum.model.EndpointHit;
 import ru.practicum.model.ViewStats;
 import ru.practicum.repository.EndpointHitRepository;
@@ -25,23 +25,18 @@ public class EndpointHitServiceImpl implements EndpointHitService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ViewStats> getStats(
-            LocalDateTime startDateTime,
-            LocalDateTime endDateTime,
-            List<String> uris,
-            Boolean unique
-    ) {
-        if (startDateTime.isAfter(endDateTime)) {
+    public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        if (start.isAfter(end)) {
             throw new GetStatsException("start should be before end");
         }
         if (unique) {
             return uris == null
-                    ? hitRepository.getAllServicesStatsWithUniqueIp(startDateTime, endDateTime)
-                    : hitRepository.getStatsWithUniqueIp(startDateTime, endDateTime, uris);
+                    ? hitRepository.getAllServicesStatsWithUniqueIp(start, end)
+                    : hitRepository.getStatsWithUniqueIp(start, end, uris);
         } else {
             return uris == null
-                    ? hitRepository.getAllServicesStats(startDateTime, endDateTime)
-                    : hitRepository.getStats(startDateTime, endDateTime, uris);
+                    ? hitRepository.getAllServicesStats(start, end)
+                    : hitRepository.getStats(start, end, uris);
         }
     }
 }

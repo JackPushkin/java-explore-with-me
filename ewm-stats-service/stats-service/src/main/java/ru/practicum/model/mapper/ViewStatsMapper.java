@@ -1,24 +1,16 @@
 package ru.practicum.model.mapper;
 
+
+import org.mapstruct.Mapper;
 import ru.practicum.dto.ViewStatsDto;
 import ru.practicum.model.ViewStats;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class ViewStatsMapper {
+@Mapper(componentModel = "spring")
+public interface ViewStatsMapper {
 
-    public static ViewStatsDto toViewStatsDto(ViewStats viewStats) {
-        return ViewStatsDto.builder()
-                .app(viewStats.getApp())
-                .uri(viewStats.getUri())
-                .hits(viewStats.getHits())
-                .build();
-    }
+    ViewStatsDto toViewStatsDto(ViewStats viewStats);
 
-    public static List<ViewStatsDto> toViewStatsDto(List<ViewStats> viewStatsList) {
-        return viewStatsList.stream()
-                .map(ViewStatsMapper::toViewStatsDto)
-                .collect(Collectors.toList());
-    }
+    List<ViewStatsDto> toViewStatsDtoList(List<ViewStats> viewStatsList);
 }

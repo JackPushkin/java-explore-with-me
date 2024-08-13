@@ -1,20 +1,13 @@
 package ru.practicum.model.mapper;
 
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.model.EndpointHit;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+@Mapper(componentModel = "spring")
+public interface EndpointHitMapper {
 
-public class EndpointHitMapper {
-
-    public static EndpointHit toEndpointHit(EndpointHitDto endpointHitDto) {
-        return EndpointHit.builder()
-                .app(endpointHitDto.getApp())
-                .uri(endpointHitDto.getUri())
-                .ip(endpointHitDto.getIp())
-                .timestamp(LocalDateTime.parse(endpointHitDto.getTimestamp(),
-                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
-                .build();
-    }
+    @Mapping(target = "timestamp", source = "timestamp", dateFormat = "yyyy-MM-dd HH:mm:ss")
+    EndpointHit toEndpointHit(EndpointHitDto endpointHitDto);
 }
