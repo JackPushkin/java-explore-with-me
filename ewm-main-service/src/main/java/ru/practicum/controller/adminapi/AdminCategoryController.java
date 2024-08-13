@@ -32,8 +32,8 @@ public class AdminCategoryController {
 
     @PostMapping
     @Validated(ValidationMarker.OnCreate.class)
-    public ResponseEntity<CategoryDto> createCategory(@Valid @RequestBody CategoryDto categoryDto) {
-        log.info("Create category {}", categoryDto);
+    public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid CategoryDto categoryDto) {
+        log.info("Create category: {}", categoryDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(mapper.toCategoryDto(categoryService.createCategory(mapper.toCategory(categoryDto))));
@@ -41,19 +41,18 @@ public class AdminCategoryController {
     }
 
     @DeleteMapping("/{catId}")
-    public ResponseEntity<Void> removeCategory(@Positive @PathVariable("catId") Integer catId) {
-        log.info("Remove category with id={}", catId);
+    public ResponseEntity<Void> removeCategory(@PathVariable @Positive Integer catId) {
+        log.info("Remove category id={}", catId);
         categoryService.removeCategory(catId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @PatchMapping("/{catId}")
-    @Validated(ValidationMarker.OnUpdate.class)
     public CategoryDto updateCategory(
-            @PathVariable("catId") @Positive(groups = ValidationMarker.OnUpdate.class)  Integer catId,
+            @PathVariable @Positive Integer catId,
             @RequestBody @Valid CategoryDto categoryDto
     ) {
-        log.info("Update category {}", categoryDto);
+        log.info("Update category: {}", categoryDto);
         return mapper.toCategoryDto(categoryService.updateCategory(catId, categoryDto));
     }
 }

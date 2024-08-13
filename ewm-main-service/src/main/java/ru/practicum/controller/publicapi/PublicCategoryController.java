@@ -28,16 +28,16 @@ public class PublicCategoryController {
 
     @GetMapping
     public List<CategoryDto> getCategories(
-            @Min(0) @RequestParam(value = "from", defaultValue = "0") Integer from,
-            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "10") @Positive Integer size
     ) {
-        log.info("Get categories. Query parameters: from={}, size={}", from, size);
+        log.info("Get categories. Parameters: from={}, size={}", from, size);
         return mapper.toCategoryDtoList(categoryService.getCategories(from, size));
     }
 
     @GetMapping("/{catId}")
-    public CategoryDto getCategoryById(@Positive @PathVariable("catId") Integer catId) {
-        log.info("Get category with id={}", catId);
+    public CategoryDto getCategoryById(@PathVariable @Positive Integer catId) {
+        log.info("Get category id={}", catId);
         return mapper.toCategoryDto(categoryService.getCategoryById(catId));
     }
 }

@@ -30,15 +30,13 @@ public class AdminEventController {
 
     @GetMapping
     public List<EventFullDto> getEventsList(
-            @RequestParam(value = "users", required = false) List<@Positive Integer> users,
-            @RequestParam(value = "states", required = false) List<EventState> states,
-            @RequestParam(value = "categories", required = false) List<@Positive Integer> categories,
-            @RequestParam(value = "rangeStart", required = false)
-                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-            @RequestParam(value = "rangeEnd", required = false)
-                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
-            @RequestParam(value = "size", defaultValue = "10") @Positive Integer size
+            @RequestParam(required = false) List<@Positive Integer> users,
+            @RequestParam(required = false) List<EventState> states,
+            @RequestParam(required = false) List<@Positive Integer> categories,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "10") @Positive Integer size
     ) {
         log.info("Get events list. Params: users={}, states={}, categories={}, rangeStart={}, rangeEnd={}, from={}, size={}",
                 users, states, categories, rangeStart, rangeEnd, from, size);
@@ -49,7 +47,7 @@ public class AdminEventController {
     @PatchMapping("/{eventId}")
     @Validated(ValidationMarker.OnUpdate.class)
     public EventFullDto updateEvent(
-            @PathVariable("eventId") @Positive(groups = ValidationMarker.OnUpdate.class) Integer eventId,
+            @PathVariable @Positive(groups = ValidationMarker.OnUpdate.class) Integer eventId,
             @RequestBody @Valid UpdateEventAdminRequestDto adminRequestDto
     ) {
         return mapper.toEventFullDto(eventService.updateEventByAdmin(eventId, adminRequestDto));

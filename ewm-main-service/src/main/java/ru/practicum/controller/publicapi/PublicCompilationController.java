@@ -3,7 +3,11 @@ package ru.practicum.controller.publicapi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.dto.compilation.CompilationDto;
 import ru.practicum.model.mapper.CompilationMapper;
 import ru.practicum.service.interfaces.CompilationService;
@@ -24,15 +28,15 @@ public class PublicCompilationController {
 
     @GetMapping
     public List<CompilationDto> getCompilations(
-            @RequestParam(value = "pinned", required = false) Boolean pinned,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
-            @RequestParam(value = "size", defaultValue = "10") @Positive Integer size
+            @RequestParam(required = false) Boolean pinned,
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "10") @Positive Integer size
     ) {
         return mapper.toCompilationDtoList(compilationService.getCompilations(pinned, from, size));
     }
 
     @GetMapping("/{compId}")
-    public CompilationDto getCompilationById(@PathVariable("compId") @Positive Integer compId) {
+    public CompilationDto getCompilationById(@PathVariable @Positive Integer compId) {
         return mapper.toCompilationDto(compilationService.getCompilationById(compId));
     }
 }

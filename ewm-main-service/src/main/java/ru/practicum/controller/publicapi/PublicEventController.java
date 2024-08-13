@@ -4,7 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.model.EventState;
@@ -30,17 +34,15 @@ public class PublicEventController {
     @GetMapping
     public List<EventShortDto> getEvents(
             HttpServletRequest request,
-            @RequestParam(value = "text", required = false) String text,
-            @RequestParam(value = "categories", required = false) List<@Positive Integer> categories,
-            @RequestParam(value = "paid", required = false) Boolean paid,
-            @RequestParam(value = "rangeStart", required = false)
-                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-            @RequestParam(value = "rangeEnd", required = false)
-                @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
-            @RequestParam(value = "onlyAvailable", defaultValue = "true") Boolean onlyAvailable,
-            @RequestParam(value = "sort", defaultValue = "EVENT_DATE") String sort,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
-            @RequestParam(value = "size", defaultValue = "10") @Positive Integer size
+            @RequestParam(required = false) String text,
+            @RequestParam(required = false) List<@Positive Integer> categories,
+            @RequestParam(required = false) Boolean paid,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+            @RequestParam(defaultValue = "true") Boolean onlyAvailable,
+            @RequestParam(defaultValue = "EVENT_DATE") String sort,
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "10") @Positive Integer size
     ) {
         log.info("Get events list. Parameters: text={}, categories={}, paid={}, rangeStart={}, rangeEnd={}, " +
                 "onlyAvailable={}, sort={}, from={}, size={}", text, categories, paid, rangeStart, rangeEnd,
@@ -51,10 +53,7 @@ public class PublicEventController {
     }
 
     @GetMapping("/{eventId}")
-    public EventFullDto getEventById(
-            HttpServletRequest request,
-            @PathVariable("eventId") @Positive Integer eventId
-    ) {
+    public EventFullDto getEventById(HttpServletRequest request, @PathVariable @Positive Integer eventId) {
         log.info("Get event id={}", eventId);
         return mapper.toEventFullDto(eventService.getEventById(null, eventId));
     }

@@ -40,9 +40,9 @@ public class PrivateEventController {
 
     @GetMapping
     public List<EventShortDto> getEvents(
-            @PathVariable("userId") @Positive Integer userId,
-            @RequestParam(value = "from", defaultValue = "0") @Min(0) Integer from,
-            @RequestParam(value = "size", defaultValue = "10") @Positive Integer size
+            @PathVariable @Positive Integer userId,
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "10") @Positive Integer size
     ) {
         log.info("Get events by user id={}. Parameters: from={}, size={}", userId, from, size);
         return eventMapper.toEventShortDtoList(eventService.getUserEvents(userId, from, size));
@@ -51,7 +51,7 @@ public class PrivateEventController {
     @PostMapping
     @Validated(ValidationMarker.OnCreate.class)
     public ResponseEntity<EventFullDto> createEvent(
-            @PathVariable("userId") @Positive(groups = ValidationMarker.OnCreate.class) Integer userId,
+            @PathVariable @Positive(groups = ValidationMarker.OnCreate.class) Integer userId,
             @RequestBody @Valid NewEventDto eventDto
     ) {
         log.info("Create event={} by user id={}", eventDto, userId);
@@ -72,8 +72,8 @@ public class PrivateEventController {
     @PatchMapping("/{eventId}")
     @Validated(ValidationMarker.OnUpdate.class)
     public EventFullDto updateEvent(
-            @PathVariable("userId") @Positive(groups = ValidationMarker.OnUpdate.class) Integer userId,
-            @PathVariable("eventId") @Positive(groups = ValidationMarker.OnUpdate.class) Integer eventId,
+            @PathVariable @Positive(groups = ValidationMarker.OnUpdate.class) Integer userId,
+            @PathVariable @Positive(groups = ValidationMarker.OnUpdate.class) Integer eventId,
             @RequestBody @Valid UpdateEventUserRequestDto requestDto
     ) {
         log.info("Update event id={} by user id={}. Update object={}", eventId, userId, requestDto);

@@ -12,9 +12,13 @@ import java.time.LocalDateTime;
 @Setter
 @Builder
 public class ErrorResponse {
+
     private HttpStatus status;
+
     private String reason;
+
     private String message;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime timestamp;
 }

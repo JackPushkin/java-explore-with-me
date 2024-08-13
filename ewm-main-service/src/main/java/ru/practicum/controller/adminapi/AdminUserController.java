@@ -29,9 +29,9 @@ public class AdminUserController {
 
     @GetMapping
     public List<UserDto> getUsers(
-            @RequestParam(value = "ids", defaultValue = "") Set<@Positive Integer> ids,
-            @Min(0) @RequestParam(value = "from", defaultValue = "0") Integer from,
-            @Positive @RequestParam(value = "size", defaultValue = "10") Integer size
+            @RequestParam(defaultValue = "") Set<@Positive Integer> ids,
+            @RequestParam(defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(defaultValue = "10") @Positive Integer size
     ) {
         log.info("Get users. Query parameters: ids={}, from={}, size={}", ids, from, size);
         return mapper.toUserDtoList(userService.getUsers(ids, from, size));
@@ -39,7 +39,7 @@ public class AdminUserController {
 
     @PostMapping
     @Validated(ValidationMarker.OnCreate.class)
-    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
         log.info("Create user {}", userDto);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -47,7 +47,7 @@ public class AdminUserController {
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> removeUser(@Positive @PathVariable("userId") Integer userId) {
+    public ResponseEntity<Void> removeUser(@PathVariable @Positive Integer userId) {
         log.info("Remove user with id={}", userId);
         userService.removeUser(userId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

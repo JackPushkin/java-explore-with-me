@@ -7,7 +7,11 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.practicum.exception.*;
+import ru.practicum.exception.CategoryIsNotEmptyException;
+import ru.practicum.exception.CreateRequestException;
+import ru.practicum.exception.NotFoundException;
+import ru.practicum.exception.UpdateEventException;
+import ru.practicum.exception.UpdateRequestException;
 
 import java.time.LocalDateTime;
 
@@ -18,12 +22,10 @@ public class ErrorHandler {
     @ExceptionHandler({
             IllegalArgumentException.class,
             MethodArgumentNotValidException.class,
-            MethodArgumentTypeMismatchException.class
-    })
+            MethodArgumentTypeMismatchException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse methodArgumentTypeMismatchExceptionHandler(Exception e) {
+    public ErrorResponse methodArgumentExceptionHandler(Exception e) {
         String reason = "Incorrectly made request";
-        log.error("{}. {}", reason, e.getMessage());
         return getErrorResponse(HttpStatus.BAD_REQUEST, reason, e.getMessage());
     }
 
@@ -31,7 +33,6 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse notFoundExceptionHandler(NotFoundException e) {
         String reason = "The required object was not found";
-        log.error("{}. {}", reason, e.getMessage());
         return getErrorResponse(HttpStatus.NOT_FOUND, reason, e.getMessage());
     }
 
@@ -39,46 +40,39 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.CONFLICT)
     public ErrorResponse categoryIsNotEmptyException(CategoryIsNotEmptyException e) {
         String reason = "The category is not empty";
-        log.error("{}. {}", reason, e.getMessage());
         return getErrorResponse(HttpStatus.CONFLICT, reason, e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse parameterExceptionHandler(javax.validation.ConstraintViolationException e) {
+    public ErrorResponse constraintViolationException(javax.validation.ConstraintViolationException e) {
         String reason = "Parameters not valid";
-        log.error("{}. {}", reason, e.getMessage());
         return getErrorResponse(HttpStatus.BAD_REQUEST, reason, e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.CONFLICT)
-    public ErrorResponse parameterExceptionHandler(org.hibernate.exception.ConstraintViolationException e) {
+    public ErrorResponse constraintViolationException(org.hibernate.exception.ConstraintViolationException e) {
         String reason = "Integrity constraint has been violated";
-        log.error("{}. {}", reason, e.getMessage());
         return getErrorResponse(HttpStatus.CONFLICT, reason, e.getMessage());
     }
 
-    @ExceptionHandler({
-            CreateRequestException.class,
-            UpdateRequestException.class
-    })
+    @ExceptionHandler({ CreateRequestException.class, UpdateRequestException.class })
     @ResponseStatus(value = HttpStatus.CONFLICT)
-    public ErrorResponse parameterExceptionHandler(RuntimeException e) {
+    public ErrorResponse requestExceptionHandler(RuntimeException e) {
         String reason = "Create/Update request error.";
-        log.error("{}. {}", reason, e.getMessage());
         return getErrorResponse(HttpStatus.CONFLICT, reason, e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.CONFLICT)
-    public ErrorResponse parameterExceptionHandler(UpdateEventException e) {
+    public ErrorResponse updateEventExceptionHandler(UpdateEventException e) {
         String reason = "Update event error.";
-        log.error("{}. {}", reason, e.getMessage());
         return getErrorResponse(HttpStatus.CONFLICT, reason, e.getMessage());
     }
 
     private ErrorResponse getErrorResponse(HttpStatus status, String reason, String message) {
+        log.error("{}. {}", reason, message);
         return ErrorResponse.builder()
                 .status(status)
                 .reason(reason)
@@ -87,5 +81,3 @@ public class ErrorHandler {
                 .build();
     }
 }
-
-// TODO: remove duplicate code if possible
