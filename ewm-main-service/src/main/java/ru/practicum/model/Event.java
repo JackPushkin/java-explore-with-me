@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -32,12 +33,15 @@ public class Event {
     private Integer id;
 
     @Column(nullable = false)
+    @Length(min = 20, max = 2000)
     private String annotation;
 
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false)
+    @Length(min = 3, max = 120)
     private String title;
 
     @Column(nullable = false)
+    @Length(min = 20, max = 7000)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -54,6 +54,6 @@ public class AdminCategoryController {
             @RequestBody @Valid CategoryDto categoryDto
     ) {
         log.info("Update category {}", categoryDto);
-        return mapper.toCategoryDto(categoryService.updateCategory(catId, mapper.toCategory(categoryDto)));
+        return mapper.toCategoryDto(categoryService.updateCategory(catId, categoryDto));
     }
 }

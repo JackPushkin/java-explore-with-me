@@ -48,7 +48,8 @@ public class CompilationServiceImpl implements CompilationService {
     public Compilation createCompilation(UpdateCompilationRequestDto requestDto) {
         List<Event> events = eventRepository
                 .findAllByIdIn(requestDto.getEvents() == null ? List.of() : requestDto.getEvents());
-        Compilation compilation = new Compilation(null, requestDto.getPinned(), requestDto.getTitle(), events);
+        Compilation compilation = new Compilation(
+                null, requestDto.getPinned() != null && requestDto.getPinned(), requestDto.getTitle(), events);
         return compilationRepository.save(compilation);
     }
 
@@ -64,8 +65,10 @@ public class CompilationServiceImpl implements CompilationService {
     public Compilation updateCompilation(Integer compId, UpdateCompilationRequestDto requestDto) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(
                 () -> new NotFoundException(String.format("Compilation id=%d not found", compId)));
-        List<Event> events = eventRepository.findAllByIdIn(requestDto.getEvents());
-        compilation.setEvents(events);
+        if (requestDto.getEvents() != null) {
+            List<Event> events = eventRepository.findAllByIdIn(requestDto.getEvents());
+            compilation.setEvents(events);
+        }
         compilation.setPinned(requestDto.getPinned() == null ? compilation.isPinned() : requestDto.getPinned());
         compilation.setTitle(requestDto.getTitle() == null ? compilation.getTitle() : requestDto.getTitle());
         return compilationRepository.save(compilation);

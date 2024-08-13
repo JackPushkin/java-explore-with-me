@@ -87,6 +87,7 @@ public class EventServiceImpl implements EventService {
                 : eventRepository.getEventByIdAndState(eventId, List.of(EventState.PUBLISHED)).orElseThrow(
                         () -> new NotFoundException(String.format("Event with id=%d not found", eventId)));
         event.setConfirmedRequests(requestRepository.getCountOfConfirmedRequests(eventId, RequestStatus.CONFIRMED));
+        event.setViews(event.getViews() + 1);
         return event;
     }
 
@@ -120,6 +121,9 @@ public class EventServiceImpl implements EventService {
                 : location);
         event.setCreatedOn(LocalDateTime.now());
         event.setState(EventState.PENDING);
+        event.setParticipantLimit(eventDto.getParticipantLimit() == null ? 0 : eventDto.getParticipantLimit());
+        event.setRequestModeration(eventDto.getRequestModeration() == null || eventDto.getRequestModeration());
+        event.setPaid(eventDto.getPaid() != null && eventDto.getPaid());
         event.setConfirmedRequests(0L);
         event.setViews(0);
         return eventRepository.save(event);
@@ -279,9 +283,18 @@ public class EventServiceImpl implements EventService {
         if (annotation != null) event.setAnnotation(annotation);
         if (description != null) event.setDescription(description);
         if (isPaid != null) event.setPaid(isPaid);
-        if (participantLimit != null) event.setParticipantLimit(participantLimit);
-        if (requestModeration != null) event.setRequestModeration(requestModeration);
+        if (participantLimit != null) {
+            event.setParticipantLimit(participantLimit);
+        }
+//        else {
+//            event.setParticipantLimit(0);
+//        }
+        if (requestModeration != null) {
+            event.setRequestModeration(requestModeration);
+        }
+//        else {
+//            event.setRequestModeration(true);
+//        }
         if (title != null) event.setTitle(title);
-
     }
 }

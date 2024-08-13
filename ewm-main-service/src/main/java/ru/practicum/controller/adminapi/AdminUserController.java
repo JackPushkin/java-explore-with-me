@@ -38,7 +38,7 @@ public class AdminUserController {
     }
 
     @PostMapping
-    @Validated(value = ValidationMarker.OnCreate.class)
+    @Validated(ValidationMarker.OnCreate.class)
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
         log.info("Create user {}", userDto);
         return ResponseEntity

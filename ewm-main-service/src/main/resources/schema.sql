@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS events_compilations CASCADE;
 CREATE TABLE IF NOT EXISTS users
 (
     id    SERIAL PRIMARY KEY,
-    name  VARCHAR(128) NOT NULL,
+    name  VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL,
     UNIQUE (email)
 );
@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS categories
 CREATE TABLE IF NOT EXISTS events
 (
     id            SERIAL PRIMARY KEY,
-    annotation    VARCHAR                     NOT NULL,
-    title         VARCHAR                     NOT NULL,
+    annotation    TEXT                        NOT NULL,
+    title         TEXT                        NOT NULL,
     description   TEXT                        NOT NULL,
     id_category   INTEGER                     NOT NULL,
     creation_date TIMESTAMP WITHOUT TIME ZONE NOT NULL,
@@ -48,7 +48,10 @@ CREATE TABLE IF NOT EXISTS events
     view          INTEGER DEFAULT 0,
     FOREIGN KEY (id_initiator) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (id_location) REFERENCES locations (id),
-    FOREIGN KEY (id_category) REFERENCES categories (id)
+    FOREIGN KEY (id_category) REFERENCES categories (id),
+    CHECK (char_length(description) >= 20 AND char_length(description) <= 7000),
+    CHECK (char_length(annotation) >= 20 AND char_length(annotation) <= 2000),
+    CHECK (char_length(title) >= 3 AND char_length(title) <= 120)
 );
 
 CREATE TABLE IF NOT EXISTS compilations

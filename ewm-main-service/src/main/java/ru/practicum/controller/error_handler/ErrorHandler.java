@@ -44,14 +44,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.CONFLICT)
-    public ErrorResponse inconsistentDataException(InconsistentDataException e) {
-        String reason = "Inconsistent data";
-        log.error("{}. {}", reason, e.getMessage());
-        return getErrorResponse(HttpStatus.CONFLICT, reason, e.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     public ErrorResponse parameterExceptionHandler(javax.validation.ConstraintViolationException e) {
         String reason = "Parameters not valid";

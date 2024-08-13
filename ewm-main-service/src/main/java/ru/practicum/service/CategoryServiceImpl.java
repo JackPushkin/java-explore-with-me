@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.dto.category.CategoryDto;
 import ru.practicum.exception.CategoryIsNotEmptyException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.Category;
@@ -49,10 +50,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     @Transactional
-    public Category updateCategory(Integer catId, Category category) {
-        if (!categoryRepository.existsById(catId)) {
-            throw new NotFoundException(String.format("Category with id=%d was not found", catId));
-        }
+    public Category updateCategory(Integer catId, CategoryDto categoryDto) {
+        Category category = getCategoryById(catId);
+        category.setName(categoryDto.getName() == null ? category.getName() : categoryDto.getName());
         return categoryRepository.save(category);
     }
 

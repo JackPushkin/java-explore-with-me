@@ -40,6 +40,7 @@ public class AdminCompilationController {
     }
 
     @PatchMapping("/{compId}")
+    @Validated(ValidationMarker.OnUpdate.class)
     public CompilationDto updateCompilation(
             @PathVariable("compId") @Positive Integer compId,
             @RequestBody @Valid UpdateCompilationRequestDto requestDto
