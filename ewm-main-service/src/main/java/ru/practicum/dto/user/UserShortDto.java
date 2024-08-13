@@ -1,11 +1,13 @@
 package ru.practicum.dto.user;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UserShortDto {
+
     private Integer id;
+
     private String name;
 }
-
-// TODO: validation

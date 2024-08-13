@@ -1,14 +1,20 @@
 package ru.practicum.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.dto.location.LocationDto;
 import ru.practicum.validation.ValidationMarker;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Future;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 public class NewEventDto {
 
     private Integer id;

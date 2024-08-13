@@ -45,6 +45,7 @@ services:
       - DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/main_db
       - DATASOURCE_USERNAME=postgres
       - DATASOURCE_PASSWORD=postgres
+      - SERVER_PORT=8080
 
 
   ewm-db:

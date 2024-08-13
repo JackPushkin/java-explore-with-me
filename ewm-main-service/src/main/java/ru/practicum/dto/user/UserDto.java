@@ -1,6 +1,7 @@
 package ru.practicum.dto.user;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 import ru.practicum.validation.ValidationMarker;
@@ -9,7 +10,8 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@Data
+@Getter
+@Setter
 @Validated(ValidationMarker.OnCreate.class)
 public class UserDto {
     private Integer id;

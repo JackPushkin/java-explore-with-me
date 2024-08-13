@@ -1,11 +1,13 @@
 package ru.practicum.dto.category;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotBlank;
 
-@Data
+@Getter
+@Setter
 public class CategoryDto {
 
     private Integer id;

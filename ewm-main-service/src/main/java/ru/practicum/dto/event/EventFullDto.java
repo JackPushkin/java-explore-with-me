@@ -1,7 +1,8 @@
 package ru.practicum.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.dto.category.CategoryDto;
 import ru.practicum.dto.location.LocationDto;
 import ru.practicum.dto.user.UserShortDto;
@@ -9,7 +10,8 @@ import ru.practicum.model.EventState;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 public class EventFullDto {
 
     private Integer id;
@@ -47,5 +49,3 @@ public class EventFullDto {
 
     private Integer views;
 }
-
-// TODO: validation

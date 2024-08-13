@@ -1,11 +1,13 @@
 package ru.practicum.dto.request;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import ru.practicum.model.RequestStatus;
 
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 public class ParticipationRequestDto {
 
     private Integer id;

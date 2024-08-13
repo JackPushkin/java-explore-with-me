@@ -1,13 +1,15 @@
 package ru.practicum.dto.compilation;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.validation.ValidationMarker;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 public class UpdateCompilationRequestDto {
 
     private Set<Integer> events;
