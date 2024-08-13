@@ -3,6 +3,7 @@ package ru.practicum.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.GetStatsException;
 import ru.practicum.model.EndpointHit;
 import ru.practicum.model.ViewStats;
 import ru.practicum.repository.EndpointHitRepository;
@@ -31,7 +32,7 @@ public class EndpointHitServiceImpl implements EndpointHitService {
             Boolean unique
     ) {
         if (startDateTime.isAfter(endDateTime)) {
-            throw new RuntimeException("start should be before end");
+            throw new GetStatsException("start should be before end");
         }
         if (unique) {
             return uris == null

@@ -11,6 +11,7 @@ import ru.practicum.model.EventState;
 import ru.practicum.model.mapper.EventMapper;
 import ru.practicum.service.interfaces.EventService;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
@@ -28,6 +29,7 @@ public class PublicEventController {
 
     @GetMapping
     public List<EventShortDto> getEvents(
+            HttpServletRequest request,
             @RequestParam(value = "text", required = false) String text,
             @RequestParam(value = "categories", required = false) List<@Positive Integer> categories,
             @RequestParam(value = "paid", required = false) Boolean paid,
@@ -49,7 +51,10 @@ public class PublicEventController {
     }
 
     @GetMapping("/{eventId}")
-    public EventFullDto getEventById(@PathVariable("eventId") @Positive Integer eventId) {
+    public EventFullDto getEventById(
+            HttpServletRequest request,
+            @PathVariable("eventId") @Positive Integer eventId
+    ) {
         log.info("Get event id={}", eventId);
         return mapper.toEventFullDto(eventService.getEventById(null, eventId));
     }

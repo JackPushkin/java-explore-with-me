@@ -12,17 +12,7 @@ import java.util.List;
 @Mapper(componentModel = "spring")
 public interface EventMapper {
 
-    Event toEventFromShortDto(EventShortDto eventShortDto);
-
-    Event toEventFromFullDto(EventFullDto eventFullDto);
-
-    EventShortDto toEventShortDto(Event event);
-
     EventFullDto toEventFullDto(Event event);
-
-    List<Event> toEventListFromShortDtoList(List<EventShortDto> eventShortDtoList);
-
-    List<Event> toEventListFromFullDtoList(List<EventFullDto> eventFullDtoList);
 
     List<EventShortDto> toEventShortDtoList(List<Event> events);
 
@@ -30,7 +20,4 @@ public interface EventMapper {
 
     @Mapping(ignore = true, target = "category")
     Event toEventFromNewDto(NewEventDto newEventDto);
-
-    @Mapping(target = "category", source = "category.id")
-    NewEventDto toNewEventDto(Event event);
 }

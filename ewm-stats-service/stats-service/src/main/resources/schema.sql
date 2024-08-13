@@ -6,4 +6,4 @@ CREATE TABLE IF NOT EXISTS endpoint_hits (
     endpoint_uri VARCHAR(255) NOT NULL,
     client_ip VARCHAR(15) NOT NULL,
     request_date TIMESTAMP NOT NULL
-)
+);

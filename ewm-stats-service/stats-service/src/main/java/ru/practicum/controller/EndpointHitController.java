@@ -3,6 +3,8 @@ package ru.practicum.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
@@ -22,10 +24,10 @@ public class EndpointHitController {
     private final EndpointHitService endpointHitService;
 
     @PostMapping("/hit")
-    public String createHit(@Valid @RequestBody EndpointHitDto hitDto) {
+    public ResponseEntity<String> createHit(@Valid @RequestBody EndpointHitDto hitDto) {
         log.info("Запись данных о запросе hitDto={}", hitDto);
         endpointHitService.createHit(EndpointHitMapper.toEndpointHit(hitDto));
-        return "Информация сохранена";
+        return ResponseEntity.status(HttpStatus.CREATED).body("Информация сохранена");
     }
 
     @GetMapping("/stats")
