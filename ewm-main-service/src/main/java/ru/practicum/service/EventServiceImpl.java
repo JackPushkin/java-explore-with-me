@@ -31,12 +31,12 @@ import ru.practicum.repository.UserRepository;
 import ru.practicum.service.interfaces.EventService;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class EventServiceImpl implements EventService {
 
@@ -55,21 +55,14 @@ public class EventServiceImpl implements EventService {
         text = text == null ? "" : text.toLowerCase();
         if (rangeStart == null || rangeEnd == null) {
             rangeStart = LocalDateTime.now();
-            rangeEnd = LocalDateTime
-                    .parse("3000-01-01 12:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            rangeEnd = LocalDateTime.of(3000, 12, 1, 12, 0);
         }
-        if (categories == null || categories.isEmpty()) {
-            categories = categoryRepository.findAllId().stream()
-                    .map(CategoryRepository.IdsOnly::getId)
-                    .collect(Collectors.toList());
-        }
-        List<Boolean> paidList = paid == null ? List.of(true, false) : List.of(paid);
         sort = sort.equals("VIEWS") ? "views" : sort.equals("EVENT_DATE") ? "eventDate" : "id";
 
         List<Event> events = onlyAvailable
-                ? eventRepository.getAvailableEvents(categories, text, rangeStart, rangeEnd, paidList, state,
+                ? eventRepository.getAvailableEvents(categories, text, rangeStart, rangeEnd, paid, state,
                 RequestStatus.CONFIRMED, PageRequest.of(from / size, size, Sort.Direction.DESC, sort))
-                : eventRepository.getAllEvents(categories, text, rangeStart, rangeEnd, paidList, state,
+                : eventRepository.getAllEvents(categories, text, rangeStart, rangeEnd, paid, state,
                 PageRequest.of(from / size, size, Sort.Direction.DESC, sort));
 
         Map<Integer, Long> confirmedRequestsMap =
@@ -105,7 +98,6 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
-    @Transactional
     public Event createEvent(Integer userId, NewEventDto eventDto, EventMapper mapper) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException(String.format("Category id=%d not found", eventDto.getCategory())));
@@ -145,6 +137,7 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Request> getEventRequests(Integer userId, Integer eventId) {
         eventRepository.getEventByIdAndInitiatorId(eventId, userId).orElseThrow(() ->
                 new NotFoundException(String.format("Event id=%d with initiator id=%d not found", eventId, userId)));
@@ -163,6 +156,7 @@ public class EventServiceImpl implements EventService {
             throw new UpdateRequestException("Status can only be changed for requests with status=PENDING");
         }
         Long countOfConfirmedRequests = requestRepository.getCountOfConfirmedRequests(eventId, RequestStatus.CONFIRMED);
+
         if (event.getParticipantLimit() <= countOfConfirmedRequests) {
             throw new UpdateRequestException("The participant limit has been reached");
         }
@@ -183,24 +177,17 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Event> getEventsByAdmin(
             List<Integer> users, List<EventState> states, List<Integer> categories, LocalDateTime rangeStart,
             LocalDateTime rangeEnd, Integer from, Integer size
     ) {
-        if (users == null || users.isEmpty()) {
-            users = userRepository.findAllId().stream().map(UserRepository.IdsOnly::getId).collect(Collectors.toList());
-        }
-        if (states == null || states.isEmpty()) {
-            states = List.of(EventState.PENDING, EventState.PUBLISHED, EventState.CANCELED);
-        }
-        if (categories == null || categories.isEmpty()) {
-            categories = categoryRepository.findAllId().stream()
-                    .map(CategoryRepository.IdsOnly::getId).collect(Collectors.toList());
-        }
+        users = users == null || users.isEmpty()
+                ? userRepository.findAllId().stream().map(UserRepository.IdsOnly::getId).collect(Collectors.toList())
+                : users;
         if (rangeStart == null || rangeEnd == null) {
             rangeStart = LocalDateTime.now();
-            rangeEnd = LocalDateTime.parse(
-                    "3000-01-01 12:00:00", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            rangeEnd = LocalDateTime.of(3000, 12, 1, 12, 0);
         }
         List<Event> events = eventRepository.findEventsByAdmin(
                 users, states, categories, rangeStart, rangeEnd, PageRequest.of(from / size, size));
@@ -217,6 +204,7 @@ public class EventServiceImpl implements EventService {
                 new NotFoundException(String.format("Event id=%d not found", eventId)));
         AdminStateAction stateAction = adminRequestDto.getStateAction();
         EventState state = event.getState();
+
         if (stateAction == AdminStateAction.PUBLISH_EVENT) {
             if (state != EventState.PENDING) {
                 throw new UpdateEventException("Update event error. You can publish only event with status=PENDING");
@@ -283,18 +271,10 @@ public class EventServiceImpl implements EventService {
         if (annotation != null) event.setAnnotation(annotation);
         if (description != null) event.setDescription(description);
         if (isPaid != null) event.setPaid(isPaid);
-        if (participantLimit != null) {
+        if (participantLimit != null)
             event.setParticipantLimit(participantLimit);
-        }
-//        else {
-//            event.setParticipantLimit(0);
-//        }
-        if (requestModeration != null) {
+        if (requestModeration != null)
             event.setRequestModeration(requestModeration);
-        }
-//        else {
-//            event.setRequestModeration(true);
-//        }
         if (title != null) event.setTitle(title);
     }
 }

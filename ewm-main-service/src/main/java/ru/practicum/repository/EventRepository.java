@@ -3,7 +3,6 @@ package ru.practicum.repository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.practicum.model.Event;
 import ru.practicum.model.EventState;
@@ -19,85 +18,84 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
 
     List<Event> findAllByIdIn(Collection<Integer> ids);
 
-    @Query("SELECT e FROM Event AS e " +
-            "LEFT JOIN FETCH Request AS r ON e.id = r.event.id and r.status = :requestStatus " +
-            "LEFT JOIN FETCH e.initiator AS u " +
-            "LEFT JOIN FETCH e.category AS c " +
-            "WHERE e.category.id IN (:categories) " +
-            "AND (LOWER(e.annotation) LIKE CONCAT('%',:text,'%') OR LOWER(e.description) LIKE CONCAT('%',:text,'%')) " +
-            "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd " +
-            "AND e.paid IN (:paid) " +
-            "AND e.state IN (:eventState) " +
-            "GROUP BY e.id, u.id, c.id " +
-            "HAVING e.participantLimit > COUNT(r.id)")
+    @Query("select e from Event as e " +
+            "left join fetch Request as r on e.id = r.event.id and r.status = :status " +
+            "left join fetch e.initiator as u " +
+            "left join fetch e.category as c " +
+            "where (:categories is null or e.category.id in (:categories)) " +
+            "and (lower(e.annotation) like concat('%',:text,'%') or lower(e.description) like concat('%',:text,'%') ) " +
+            "and e.eventDate between :start and :end " +
+            "and (:paid is null or e.paid in (:paid)) " +
+            "and e.state in (:state) " +
+            "group by e.id, u.id, c.id " +
+            "having e.participantLimit > count(r.id)")
     List<Event> getAvailableEvents(
-            @Param("categories") Collection<Integer> categories, @Param("text") String text,
-            @Param("rangeStart") LocalDateTime rangeStart, @Param("rangeEnd") LocalDateTime rangeEnd,
-            @Param("paid") Collection<Boolean> paid, @Param("eventState") Collection<EventState> state,
-            @Param("requestStatus") RequestStatus status, Pageable pageable
-    );
-
-    @Query("SELECT e FROM Event AS e " +
-            "LEFT JOIN FETCH e.initiator " +
-            "LEFT JOIN FETCH e.category " +
-            "WHERE e.category.id IN (:categories) " +
-                "AND (LOWER(e.annotation) LIKE CONCAT('%',:text,'%') OR LOWER(e.description) LIKE CONCAT('%',:text,'%')) " +
-                "AND e.eventDate BETWEEN :rangeStart AND :rangeEnd " +
-                "AND e.paid IN (:paid) " +
-                "AND e.state IN (:eventState)")
-    List<Event> getAllEvents(
-            @Param("categories") Collection<Integer> categories, @Param("text") String text,
-            @Param("rangeStart") LocalDateTime rangeStart, @Param("rangeEnd") LocalDateTime rangeEnd,
-            @Param("paid") Collection<Boolean> paid, @Param("eventState") Collection<EventState> state, Pageable pageable
-    );
-
-    @Query("SELECT e " +
-            "FROM Event AS e " +
-            "JOIN FETCH e.initiator " +
-            "JOIN FETCH e.location " +
-            "JOIN FETCH e.category " +
-            "WHERE e.id = :eventId AND e.state IN (:state)")
-    Optional<Event> getEventByIdAndState(@Param("eventId") Integer eventId, @Param("state") Collection<EventState> state);
-
-    @Query("SELECT e FROM Event AS e " +
-            "JOIN FETCH e.initiator " +
-            "JOIN FETCH e.location " +
-            "JOIN FETCH e.category " +
-            "WHERE e.id = :eventId AND e.initiator.id = :initiatorId")
-    Optional<Event> getEventByIdAndInitiatorId(
-            @Param("eventId") Integer eventId, @Param("initiatorId") Integer initiatorId);
-
-    @Query("SELECT e FROM Event AS e " +
-            "LEFT JOIN FETCH e.category " +
-            "WHERE e.initiator.id = :initiatorId")
-    List<Event> findAllByInitiatorId(@Param("initiatorId") Integer initiatorId, Pageable pageable);
-
-    @Query("SELECT new ru.practicum.model.Event(e.id, COUNT(r.id)) " +
-            "FROM Event AS e LEFT JOIN Request AS r ON r.event.id = e.id and r.status = :status group by e.id")
-    List<RequestIdCount> getRequestIdCountList(@Param("status") RequestStatus status);
-
-    @Query("SELECT new ru.practicum.model.Event(e.id, COUNT(r.id)) " +
-            "FROM Event AS e LEFT JOIN Request AS r ON r.event.id = e.id " +
-                "and r.status = :status " +
-                "and e.id in (:eventIds) " +
-            "group by e.id")
-    List<RequestIdCount> getRequestIdCountListByEventIdIn(
-            @Param("status") RequestStatus status, @Param("eventIds") Collection<Integer> ids);
+            Collection<Integer> categories, String text, LocalDateTime start, LocalDateTime end,
+            Boolean paid, Collection<EventState> state, RequestStatus status, Pageable pageable);
 
     @Query("select e from Event as e " +
-            "join fetch e.initiator as i " +
-            "join fetch e.category as c " +
-            "join fetch e.location as l " +
+            "left join fetch e.initiator " +
+            "left join fetch e.category " +
+            "where (:categories is null or e.category.id in (:categories)) " +
+            "and (lower(e.annotation) like concat('%',:text,'%') or lower(e.description) like concat('%',:text,'%') ) " +
+            "and e.eventDate between :start and :end " +
+            "and (:paid is null or e.paid in (:paid)) " +
+            "and e.state in (:state)")
+    List<Event> getAllEvents(
+            Collection<Integer> categories, String text, LocalDateTime start, LocalDateTime end,
+            Boolean paid, Collection<EventState> state, Pageable pageable);
+
+    @Query("select e " +
+            "from Event as e " +
+            "join fetch e.initiator " +
+            "join fetch e.location " +
+            "join fetch e.category " +
+            "where e.id = :eventId " +
+            "and e.state in (:state)")
+    Optional<Event> getEventByIdAndState(Integer eventId, Collection<EventState> state);
+
+    @Query("select e from Event as e " +
+            "left join fetch e.initiator " +
+            "left join fetch e.location " +
+            "left join fetch e.category " +
+            "where e.id = :eventId " +
+            "and e.initiator.id = :initiatorId")
+    Optional<Event> getEventByIdAndInitiatorId(Integer eventId, Integer initiatorId);
+
+    @Query("select e from Event as e " +
+            "left join fetch e.category " +
+            "where e.initiator.id = :initiatorId")
+    List<Event> findAllByInitiatorId(Integer initiatorId, Pageable pageable);
+
+    @Query("select new ru.practicum.model.Event(e.id, count(r.id)) " +
+            "from Event as e " +
+            "left join Request as r on r.event.id = e.id " +
+            "and r.status = :status " +
+            "group by e.id")
+    List<RequestIdCount> getRequestIdCountList(RequestStatus status);
+
+    @Query("select new ru.practicum.model.Event(e.id, count(r.id)) " +
+            "from Event as e " +
+            "left join Request as r on r.event.id = e.id " +
+            "and r.status = :status " +
+            "and e.id in (:ids) " +
+            "group by e.id")
+    List<RequestIdCount> getRequestIdCountListByEventIdIn(RequestStatus status, Collection<Integer> ids);
+
+    @Query("select e from Event as e " +
+            "left join fetch e.initiator as i " +
+            "left join fetch e.category as c " +
+            "left join fetch e.location as l " +
             "where i.id in (:users) " +
-                "and e.state in (:states) " +
-                "and c.id in (:categories) " +
-                "and e.eventDate between :start and :end")
+            "and (:states is null or e.state in (:states)) " +
+            "and (:categories is null or e.category.id in (:categories)) " +
+            "and e.eventDate between :start and :end")
     List<Event> findEventsByAdmin(
-            @Param("users") Collection<Integer> users, @Param("states") Collection<EventState> states,
-            @Param("categories") Collection<Integer> categories, @Param("start") LocalDateTime rangeStart,
-            @Param("end") LocalDateTime rangeEnd, Pageable pageable);
+            Collection<Integer> users, Collection<EventState> states, Collection<Integer> categories,
+            LocalDateTime start, LocalDateTime end, Pageable pageable);
 
     interface RequestIdCount {
+
         Integer getId();
 
         Long getConfirmedRequests();

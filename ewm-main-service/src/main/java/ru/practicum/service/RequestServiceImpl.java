@@ -41,9 +41,9 @@ public class RequestServiceImpl implements RequestService {
                 () -> new NotFoundException(String.format("Event with id=%d not found", eventId)));
         checkRequesterOwnEvent(userId, event.getInitiator().getId(), eventId);
         checkUnpublishedEvent(event.getState(), eventId);
+
         if (event.getParticipantLimit() != null && event.getParticipantLimit() > 0) {
-            Long countOfConfirmedRequests =
-                    requestRepository.getCountOfConfirmedRequests(eventId, RequestStatus.CONFIRMED);
+            Long countOfConfirmedRequests = requestRepository.getCountOfConfirmedRequests(eventId, RequestStatus.CONFIRMED);
             checkConfirmedRequestsLimit(event.getParticipantLimit(), countOfConfirmedRequests);
         }
         Request request = Request.builder()

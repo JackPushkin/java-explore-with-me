@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -27,13 +28,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
     public User createUser(User user) {
         return userRepository.save(user);
     }
 
     @Override
-    @Transactional
     public void removeUser(Integer userId) {
         userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException(String.format("User with id=%d not found", userId)));

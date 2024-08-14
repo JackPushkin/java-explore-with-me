@@ -3,6 +3,7 @@ package ru.practicum.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.dto.compilation.UpdateCompilationRequestDto;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.Compilation;
@@ -17,6 +18,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CompilationServiceImpl implements CompilationService {
 
@@ -24,6 +26,7 @@ public class CompilationServiceImpl implements CompilationService {
     private final EventRepository eventRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public List<Compilation> getCompilations(Boolean pinned, Integer from, Integer size) {
         List<Compilation> compilations =
                 compilationRepository.findAllByPinnedIn(pinned == null ? List.of(true, false) : List.of(pinned),
@@ -39,6 +42,7 @@ public class CompilationServiceImpl implements CompilationService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Compilation getCompilationById(Integer compId) {
         return compilationRepository.findById(compId).orElseThrow(
                 () -> new NotFoundException(String.format("Compilation id=%d not found", compId)));

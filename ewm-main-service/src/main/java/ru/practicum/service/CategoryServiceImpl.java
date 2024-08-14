@@ -14,6 +14,7 @@ import ru.practicum.service.interfaces.CategoryService;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
@@ -33,23 +34,19 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    @Transactional
     public Category createCategory(Category category) {
         return categoryRepository.save(category);
     }
 
     @Override
-    @Transactional
     public void removeCategory(Integer catId) {
         getCategoryById(catId);
-        if (categoryIsNotEmpty(catId)) {
+        if (categoryIsNotEmpty(catId))
             throw new CategoryIsNotEmptyException(String.format("The category with id=%d is not empty", catId));
-        }
         categoryRepository.deleteById(catId);
     }
 
     @Override
-    @Transactional
     public Category updateCategory(Integer catId, CategoryDto categoryDto) {
         Category category = getCategoryById(catId);
         category.setName(categoryDto.getName() == null ? category.getName() : categoryDto.getName());
