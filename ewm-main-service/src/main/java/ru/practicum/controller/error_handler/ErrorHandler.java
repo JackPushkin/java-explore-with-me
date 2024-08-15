@@ -45,7 +45,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    public ErrorResponse constraintViolationException(javax.validation.ConstraintViolationException e) {
+    public ErrorResponse constraintViolationException(jakarta.validation.ConstraintViolationException e) {
         String reason = "Parameters not valid";
         return getErrorResponse(HttpStatus.BAD_REQUEST, reason, e.getMessage());
     }

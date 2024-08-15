@@ -15,9 +15,9 @@ import ru.practicum.model.EventState;
 import ru.practicum.model.mapper.EventMapper;
 import ru.practicum.service.interfaces.EventService;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
 

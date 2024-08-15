@@ -5,17 +5,14 @@ import org.springframework.stereotype.Service;
 import ru.practicum.exception.CreateRequestException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.exception.UpdateRequestException;
-import ru.practicum.model.Event;
-import ru.practicum.model.EventState;
-import ru.practicum.model.Request;
-import ru.practicum.model.RequestStatus;
-import ru.practicum.model.User;
+import ru.practicum.model.*;
 import ru.practicum.repository.EventRepository;
 import ru.practicum.repository.RequestRepository;
 import ru.practicum.repository.UserRepository;
 import ru.practicum.service.interfaces.RequestService;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Service
@@ -49,7 +46,7 @@ public class RequestServiceImpl implements RequestService {
         Request request = Request.builder()
                 .requester(requester)
                 .event(event)
-                .created(LocalDateTime.now())
+                .created(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .status(RequestStatus.PENDING)
                 .build();
 

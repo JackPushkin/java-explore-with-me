@@ -9,14 +9,17 @@ import ru.practicum.model.EndpointHit;
 import ru.practicum.model.ViewStats;
 import ru.practicum.service.EndpointHitService;
 
-import javax.persistence.EntityManager;
-import javax.persistence.TypedQuery;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @Transactional
@@ -32,7 +35,7 @@ public class EndpointHitServiceTest {
     public void createHitTest() {
         // Create EndpointHit
         EndpointHit endpointHit =
-                createEndpointHit("service1", "/test", "127.0.0.1", "2000-01-01 10:00:00");
+                createEndpointHit("/test", "127.0.0.1", "2000-01-01 10:00:00");
         // Save EndpointHit to DB
         endpointHitService.createHit(endpointHit);
         // Get EndpointHit from DB
@@ -50,12 +53,12 @@ public class EndpointHitServiceTest {
     public void getStatsTest() {
         // Create list of EndpointHit
         List<EndpointHit> hits = List.of(
-                createEndpointHit("service1", "/1", "127.0.0.1", "2000-01-01 10:00:00"),
-                createEndpointHit("service1", "/1", "127.0.0.1", "2000-01-01 11:00:00"),
-                createEndpointHit("service1", "/1", "192.168.1.1", "2000-01-01 12:00:00"),
-                createEndpointHit("service1", "/2", "127.0.0.1", "2000-01-01 13:00:00"),
-                createEndpointHit("service1", "/2", "192.168.1.1", "2000-01-01 14:00:00"),
-                createEndpointHit("service1", "/3", "192.168.1.1", "2000-01-01 15:00:00")
+                createEndpointHit("/1", "127.0.0.1", "2000-01-01 10:00:00"),
+                createEndpointHit("/1", "127.0.0.1", "2000-01-01 11:00:00"),
+                createEndpointHit("/1", "192.168.1.1", "2000-01-01 12:00:00"),
+                createEndpointHit("/2", "127.0.0.1", "2000-01-01 13:00:00"),
+                createEndpointHit("/2", "192.168.1.1", "2000-01-01 14:00:00"),
+                createEndpointHit("/3", "192.168.1.1", "2000-01-01 15:00:00")
         );
         // Save list of EndpointHit to DB
         insertHits(hits);
@@ -131,9 +134,9 @@ public class EndpointHitServiceTest {
         assertThat(viewStatsList5.get(1).getHits(), equalTo(2L));
     }
 
-    private EndpointHit createEndpointHit(String app, String uri, String ip, String dateTime) {
+    private EndpointHit createEndpointHit(String uri, String ip, String dateTime) {
         return EndpointHit.builder()
-                .app(app)
+                .app("service1")
                 .uri(uri)
                 .ip(ip)
                 .timestamp(LocalDateTime.parse(dateTime, formatter))

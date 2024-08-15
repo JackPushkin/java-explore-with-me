@@ -16,7 +16,7 @@ import ru.practicum.model.mapper.EndpointHitMapper;
 import ru.practicum.model.mapper.ViewStatsMapper;
 import ru.practicum.service.EndpointHitService;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 

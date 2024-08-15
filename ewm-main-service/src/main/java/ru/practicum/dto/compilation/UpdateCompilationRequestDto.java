@@ -5,7 +5,7 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import ru.practicum.validation.ValidationMarker;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Set;
 
 @Getter

@@ -17,8 +17,8 @@ import ru.practicum.model.mapper.CategoryMapper;
 import ru.practicum.service.interfaces.CategoryService;
 import ru.practicum.validation.ValidationMarker;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 
 @Slf4j
 @Validated

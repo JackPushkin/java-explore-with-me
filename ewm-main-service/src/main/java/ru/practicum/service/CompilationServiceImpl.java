@@ -31,7 +31,7 @@ public class CompilationServiceImpl implements CompilationService {
         List<Compilation> compilations =
                 compilationRepository.findAllByPinnedIn(pinned == null ? List.of(true, false) : List.of(pinned),
                         PageRequest.of(from / size, size)).getContent();
-        List<Event> events = compilations.stream().flatMap(compilation -> compilation.getEvents().stream()).collect(Collectors.toList());
+        List<Event> events = compilations.stream().flatMap(compilation -> compilation.getEvents().stream()).toList();
         Map<Integer, Long> collect = eventRepository.getRequestIdCountListByEventIdIn(
                 RequestStatus.CONFIRMED, events.stream().map(Event::getId).collect(Collectors.toList())).stream()
                 .collect(Collectors.toMap(

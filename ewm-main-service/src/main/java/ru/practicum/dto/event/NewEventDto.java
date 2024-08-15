@@ -6,11 +6,11 @@ import lombok.Setter;
 import ru.practicum.dto.location.LocationDto;
 import ru.practicum.validation.ValidationMarker;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import java.time.LocalDateTime;
 
 @Getter

@@ -16,7 +16,7 @@ import ru.practicum.dto.request.ParticipationRequestDto;
 import ru.practicum.model.mapper.RequestMapper;
 import ru.practicum.service.interfaces.RequestService;
 
-import javax.validation.constraints.Positive;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 
 @Slf4j

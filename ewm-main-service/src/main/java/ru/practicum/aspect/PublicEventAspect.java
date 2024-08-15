@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import ru.practicum.client.StatsClient;
 import ru.practicum.dto.EndpointHitDto;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 

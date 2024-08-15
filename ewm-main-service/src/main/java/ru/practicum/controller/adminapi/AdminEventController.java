@@ -4,7 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.UpdateEventAdminRequestDto;
 import ru.practicum.model.EventState;
@@ -12,9 +18,9 @@ import ru.practicum.model.mapper.EventMapper;
 import ru.practicum.service.interfaces.EventService;
 import ru.practicum.validation.ValidationMarker;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Positive;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import java.time.LocalDateTime;
 import java.util.List;
 

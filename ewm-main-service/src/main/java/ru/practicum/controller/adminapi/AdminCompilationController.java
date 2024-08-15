@@ -18,8 +18,8 @@ import ru.practicum.model.mapper.CompilationMapper;
 import ru.practicum.service.interfaces.CompilationService;
 import ru.practicum.validation.ValidationMarker;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 
 @Slf4j
 @Validated
