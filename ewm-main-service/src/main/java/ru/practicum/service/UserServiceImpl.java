@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<User> getUsers(Set<Integer> ids, Integer from, Integer size) {
-        return ids.isEmpty()
+        return ids == null || ids.isEmpty()
                 ? userRepository.findAll(PageRequest.of(from / size, size)).getContent()
                 : userRepository.findAllByIdIn(ids, PageRequest.of(from / size, size));
     }
