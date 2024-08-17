@@ -1,24 +1,26 @@
 package ru.practicum.aspect;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import ru.practicum.client.StatsClient;
 import ru.practicum.dto.EndpointHitDto;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Slf4j
 @Aspect
+@Order(2)
 @Component
 @RequiredArgsConstructor
-public class PublicEventAspect {
+public class SendStatsAspect {
 
     private final StatsClient statsClient;
 
@@ -31,7 +33,7 @@ public class PublicEventAspect {
     }
 
     @AfterReturning(value = "getEventsMethod() || getEventsByIdMethod()")
-    public void doAccessCheck(JoinPoint joinPoint) {
+    public void sendStatsAdvice(JoinPoint joinPoint) {
         Object[] args = joinPoint.getArgs();
         HttpServletRequest request = (HttpServletRequest) args[0];
         String clientIp = request.getRemoteAddr();

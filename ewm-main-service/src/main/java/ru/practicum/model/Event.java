@@ -78,9 +78,6 @@ public class Event {
     @Enumerated(EnumType.STRING)
     private EventState state;
 
-    @Column(name = "view")
-    private Integer views;
-
     @Transient
     private Long confirmedRequests = 0L;
 

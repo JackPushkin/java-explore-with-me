@@ -80,7 +80,6 @@ public class EventServiceImpl implements EventService {
                 : eventRepository.getEventByIdAndState(eventId, List.of(EventState.PUBLISHED)).orElseThrow(
                         () -> new NotFoundException(String.format("Event with id=%d not found", eventId)));
         event.setConfirmedRequests(requestRepository.getCountOfConfirmedRequests(eventId, RequestStatus.CONFIRMED));
-        event.setViews(event.getViews() + 1);
         return event;
     }
 
@@ -117,7 +116,6 @@ public class EventServiceImpl implements EventService {
         event.setRequestModeration(eventDto.getRequestModeration() == null || eventDto.getRequestModeration());
         event.setPaid(eventDto.getPaid() != null && eventDto.getPaid());
         event.setConfirmedRequests(0L);
-        event.setViews(0);
         return eventRepository.save(event);
     }
 

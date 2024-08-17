@@ -32,6 +32,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public Request createRequest(Integer userId, Integer eventId) {
+
         User requester = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException(String.format("User with id=%d not found", userId)));
         Event event = eventRepository.findById(eventId).orElseThrow(

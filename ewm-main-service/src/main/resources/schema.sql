@@ -45,7 +45,6 @@ CREATE TABLE IF NOT EXISTS events
     part_limit    INTEGER DEFAULT 0,
     moderation    BOOLEAN                     NOT NULL,
     state         VARCHAR(16)                 NOT NULL,
-    view          INTEGER DEFAULT 0,
     FOREIGN KEY (id_initiator) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY (id_location) REFERENCES locations (id),
     FOREIGN KEY (id_category) REFERENCES categories (id),
