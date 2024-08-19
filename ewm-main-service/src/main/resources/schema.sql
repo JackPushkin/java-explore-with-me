@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS events CASCADE;
 DROP TABLE IF EXISTS requests CASCADE;
+DROP TABLE IF EXISTS comments CASCADE;
 DROP TABLE IF EXISTS locations CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS compilations CASCADE;
@@ -81,4 +82,16 @@ CREATE TABLE IF NOT EXISTS requests
     FOREIGN KEY (id_event) REFERENCES events (id),
     FOREIGN KEY (id_requester) REFERENCES users (id),
     UNIQUE (id_event, id_requester)
+);
+
+CREATE TABLE IF NOT EXISTS comments
+(
+    id         SERIAL PRIMARY KEY,
+    content    VARCHAR(2048)               NOT NULL,
+    created    TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    id_creator INTEGER                     NOT NULL,
+    id_event   INTEGER                     NOT NULL,
+    FOREIGN KEY (id_creator) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY (id_event) REFERENCES events (id) ON DELETE CASCADE,
+    CHECK (char_length(content) <= 2048)
 );
