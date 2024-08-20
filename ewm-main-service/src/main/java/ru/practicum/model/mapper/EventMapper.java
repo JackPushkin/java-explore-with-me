@@ -20,4 +20,6 @@ public interface EventMapper {
 
     @Mapping(ignore = true, target = "category")
     Event toEventFromNewDto(NewEventDto newEventDto);
+
+    Event toEventFromFullDto(EventFullDto fullDto);
 }

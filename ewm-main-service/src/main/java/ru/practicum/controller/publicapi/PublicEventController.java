@@ -47,14 +47,13 @@ public class PublicEventController {
         log.info("Get events list. Parameters: text={}, categories={}, paid={}, rangeStart={}, rangeEnd={}, " +
                 "onlyAvailable={}, sort={}, from={}, size={}", text, categories, paid, rangeStart, rangeEnd,
                 onlyAvailable, sort, from, size);
-        return mapper.toEventShortDtoList(eventService.getEvents(
-                text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size,
-                List.of(EventState.PUBLISHED)));
+        return eventService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size,
+                List.of(EventState.PUBLISHED));
     }
 
     @GetMapping("/{eventId}")
     public EventFullDto getEventById(HttpServletRequest request, @PathVariable @Positive Integer eventId) {
         log.info("Get event id={}", eventId);
-        return mapper.toEventFullDto(eventService.getEventById(null, eventId));
+        return eventService.getEventById(null, eventId);
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.exception.CreateCommentException;
+import ru.practicum.exception.NotConsistentDataException;
 import ru.practicum.exception.NotFoundException;
 import ru.practicum.model.Comment;
 import ru.practicum.model.Event;
@@ -39,6 +40,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment updateComment(Integer userId, Long commentId, Comment comment) {
+        checkConsistency(comment.getId(), commentId);
         Comment updatedComment = commentRepository.findByIdAndCreatorId(commentId, userId).orElseThrow(
                 () -> new NotFoundException(String.format("Comment id=%d with initiator id=%d not found",
                         commentId, userId)));
@@ -91,6 +93,13 @@ public class CommentServiceImpl implements CommentService {
     private void checkEventPublished(Event event) {
         if (event.getState() != EventState.PUBLISHED) {
             throw new CreateCommentException("You can't create comment for not published event");
+        }
+    }
+
+    private void checkConsistency(Long idFromDto, Long idFromPath) {
+        if (idFromDto != null && !idFromDto.equals(idFromPath)) {
+            throw new NotConsistentDataException(
+                    String.format("Not consistent data. idFromDto=%d, idFromPath=%d", idFromDto, idFromPath));
         }
     }
 }

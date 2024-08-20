@@ -4,6 +4,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.practicum.dto.comment.CommentDto;
 import ru.practicum.dto.comment.NewCommentDto;
+import ru.practicum.dto.comment.UpdateCommentDto;
 import ru.practicum.model.Comment;
 
 import java.util.List;
@@ -12,6 +13,8 @@ import java.util.List;
 public interface CommentMapper {
 
     Comment toCommentFromNewDto(NewCommentDto commentDto);
+
+    Comment toCommentFromUpdateDto(UpdateCommentDto commentDto);
 
     @Mapping(target = "userId", source = "creator.id")
     @Mapping(target = "eventId", source = "event.id")

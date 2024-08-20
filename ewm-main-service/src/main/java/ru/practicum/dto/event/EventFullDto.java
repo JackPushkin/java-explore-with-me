@@ -27,4 +27,6 @@ public class EventFullDto extends EventShortDto {
     private boolean requestModeration;
 
     private EventState state;
+
+    private Long commentsCount;
 }

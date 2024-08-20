@@ -1,8 +1,6 @@
 package ru.practicum.service.interfaces;
 
-import ru.practicum.dto.event.NewEventDto;
-import ru.practicum.dto.event.UpdateEventAdminRequestDto;
-import ru.practicum.dto.event.UpdateEventUserRequestDto;
+import ru.practicum.dto.event.*;
 import ru.practicum.dto.request.EventRequestStatusUpdateRequestDto;
 import ru.practicum.model.Event;
 import ru.practicum.model.EventState;
@@ -16,12 +14,12 @@ import java.util.Map;
 
 public interface EventService {
 
-    List<Event> getEvents(
+    List<EventShortDto> getEvents(
             String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
             Boolean onlyAvailable, String sort, Integer from, Integer size, List<EventState> state
     );
 
-    Event getEventById(Integer userId, Integer eventId);
+    EventFullDto getEventById(Integer userId, Integer eventId);
 
     List<Event> getUserEvents(Integer userId, Integer from, Integer size);
 

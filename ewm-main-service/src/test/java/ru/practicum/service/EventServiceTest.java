@@ -63,9 +63,13 @@ public class EventServiceTest {
         User user = createUser(1);
         Event event = createEvent(1, true, 10, true, EventState.PENDING, user);
         // Get event by id
-        Event eventFromDb = eventService.getEventById(user.getId(), event.getId());
+        Event eventFromDb = mapper.toEventFromFullDto(eventService.getEventById(user.getId(), event.getId()));
         // Check result
-        assertThat(eventFromDb, equalTo(event));
+        assertThat(eventFromDb.getId(), equalTo(event.getId()));
+        assertThat(eventFromDb.getTitle(), equalTo(event.getTitle()));
+        assertThat(eventFromDb.getEventDate(), equalTo(event.getEventDate()));
+        assertThat(eventFromDb.getAnnotation(), equalTo(event.getAnnotation()));
+        assertThat(eventFromDb.getState(), equalTo(event.getState()));
     }
 
     private NewEventDto createEventDto(String title, int i, boolean paid, int limit, int catId, LocationDto loc) {
