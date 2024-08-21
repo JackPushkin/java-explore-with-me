@@ -3,8 +3,11 @@ package ru.practicum.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.dto.event.EventFullDto;
+import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
 import ru.practicum.dto.event.UpdateEventAdminRequestDto;
 import ru.practicum.dto.event.UpdateEventUserRequestDto;
@@ -45,10 +48,11 @@ public class EventServiceImpl implements EventService {
     private final RequestRepository requestRepository;
     private final LocationRepository locationRepository;
     private final UserRepository userRepository;
+    private final EventMapper mapper;
 
     @Override
     @Transactional(readOnly = true)
-    public List<Event> getEvents(
+    public List<EventShortDto> getEvents(
             String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
             Boolean onlyAvailable, String sort, Integer from, Integer size, List<EventState> state
     ) {
@@ -65,22 +69,32 @@ public class EventServiceImpl implements EventService {
                 : eventRepository.getAllEvents(categories, text, rangeStart, rangeEnd, paid, state,
                 PageRequest.of(from / size, size, Sort.Direction.DESC, sort));
 
+        Map<Integer, Long> commentsCountMap =
+                getCommentsCountMap(eventRepository.getCommentsCount(events.stream().map(Event::getId).toList()));
         Map<Integer, Long> confirmedRequestsMap =
                 getConfirmedRequestsMap(eventRepository.getRequestIdCountList(RequestStatus.CONFIRMED));
         events.forEach(el -> el.setConfirmedRequests(confirmedRequestsMap.get(el.getId())));
-        return events;
+        return mapper.toEventShortDtoList(events).stream()
+                .peek(el -> el.setCommentsCount(commentsCountMap.getOrDefault(el.getId(), 0L))).toList();
+    }
+
+    private Map<Integer, Long> getCommentsCountMap(List<Pair<Integer, Long>> commentsCount) {
+        return commentsCount.stream().collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Event getEventById(Integer userId, Integer eventId) {
+    public EventFullDto getEventById(Integer userId, Integer eventId) {
         Event event = userId != null
                 ? eventRepository.getEventByIdAndInitiatorId(eventId, userId).orElseThrow(
                         () -> new NotFoundException(String.format("Event id=%d with user id=%d not found", eventId, userId)))
                 : eventRepository.getEventByIdAndState(eventId, List.of(EventState.PUBLISHED)).orElseThrow(
                         () -> new NotFoundException(String.format("Event with id=%d not found", eventId)));
+        Map<Integer, Long> commentsCountMap = getCommentsCountMap(eventRepository.getCommentsCount(List.of(event.getId())));
         event.setConfirmedRequests(requestRepository.getCountOfConfirmedRequests(eventId, RequestStatus.CONFIRMED));
-        return event;
+        EventFullDto eventFullDto = mapper.toEventFullDto(event);
+        eventFullDto.setCommentsCount(commentsCountMap.getOrDefault(event.getId(), 0L));
+        return eventFullDto;
     }
 
     @Override

@@ -1,9 +1,11 @@
 package ru.practicum.controller.adminapi;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,15 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.dto.user.UserDto;
 import ru.practicum.model.mapper.UserMapper;
 import ru.practicum.service.interfaces.UserService;
 import ru.practicum.validation.ValidationMarker;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Positive;
 import java.util.List;
 import java.util.Set;
 
@@ -45,18 +45,17 @@ public class AdminUserController {
     }
 
     @PostMapping
+    @ResponseStatus(code = HttpStatus.CREATED)
     @Validated(ValidationMarker.OnCreate.class)
-    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
+    public UserDto createUser(@RequestBody @Valid UserDto userDto) {
         log.info("Create user {}", userDto);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(mapper.toUserDto(userService.createUser(mapper.toUser(userDto))));
+        return mapper.toUserDto(userService.createUser(mapper.toUser(userDto)));
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> removeUser(@PathVariable @Positive Integer userId) {
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void removeUser(@PathVariable @Positive Integer userId) {
         log.info("Remove user with id={}", userId);
         userService.removeUser(userId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

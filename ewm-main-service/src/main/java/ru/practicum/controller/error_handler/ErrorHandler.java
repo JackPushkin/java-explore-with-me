@@ -7,11 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.practicum.exception.CategoryIsNotEmptyException;
-import ru.practicum.exception.CreateRequestException;
-import ru.practicum.exception.NotFoundException;
-import ru.practicum.exception.UpdateEventException;
-import ru.practicum.exception.UpdateRequestException;
+import ru.practicum.exception.*;
 
 import java.time.LocalDateTime;
 
@@ -68,6 +64,13 @@ public class ErrorHandler {
     @ResponseStatus(value = HttpStatus.CONFLICT)
     public ErrorResponse updateEventExceptionHandler(UpdateEventException e) {
         String reason = "Update event error.";
+        return getErrorResponse(HttpStatus.CONFLICT, reason, e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    public ErrorResponse createCommentExceptionHandler(CreateCommentException e) {
+        String reason = "Create comment for not published event.";
         return getErrorResponse(HttpStatus.CONFLICT, reason, e.getMessage());
     }
 

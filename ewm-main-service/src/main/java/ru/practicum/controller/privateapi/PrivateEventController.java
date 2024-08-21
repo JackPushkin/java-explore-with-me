@@ -6,9 +6,16 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import ru.practicum.dto.event.EventFullDto;
 import ru.practicum.dto.event.EventShortDto;
 import ru.practicum.dto.event.NewEventDto;
@@ -49,15 +56,14 @@ public class PrivateEventController {
     }
 
     @PostMapping
+    @ResponseStatus(code = HttpStatus.CREATED)
     @Validated(ValidationMarker.OnCreate.class)
-    public ResponseEntity<EventFullDto> createEvent(
+    public EventFullDto createEvent(
             @PathVariable @Positive(groups = ValidationMarker.OnCreate.class) Integer userId,
             @RequestBody @Valid NewEventDto eventDto
     ) {
         log.info("Create event={} by user id={}", eventDto, userId);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(eventMapper.toEventFullDto(eventService.createEvent(userId, eventDto, eventMapper)));
+        return eventMapper.toEventFullDto(eventService.createEvent(userId, eventDto, eventMapper));
     }
 
     @GetMapping("/{eventId}")
@@ -66,7 +72,7 @@ public class PrivateEventController {
             @PathVariable("eventId") @Positive Integer eventId
     ) {
         log.info("Get event id={} by user id={}", eventId, userId);
-        return eventMapper.toEventFullDto(eventService.getEventById(userId, eventId));
+        return eventService.getEventById(userId, eventId);
     }
 
     @PatchMapping("/{eventId}")

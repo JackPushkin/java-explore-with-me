@@ -3,6 +3,7 @@ package ru.practicum.repository;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.util.Pair;
 import org.springframework.stereotype.Repository;
 import ru.practicum.model.Event;
 import ru.practicum.model.EventState;
@@ -93,6 +94,13 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> findEventsByAdmin(
             Collection<Integer> users, Collection<EventState> states, Collection<Integer> categories,
             LocalDateTime start, LocalDateTime end, Pageable pageable);
+
+    @Query("select new org.springframework.data.util.Pair(e.id, count(c.id)) " +
+            "from Event as e " +
+            "left join Comment as c on e.id = c.event.id " +
+            "where e.id in (:ids) " +
+            "group by e.id")
+    List<Pair<Integer, Long>> getCommentsCount(Collection<Integer> ids);
 
     interface RequestIdCount {
 
